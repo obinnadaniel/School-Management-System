@@ -12,16 +12,11 @@ namespace SchoolManagement.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Enrollment
+    public partial class C__MigrationHistory
     {
-        public int EnrollmentID { get; set; }
-        public Nullable<decimal> Grade { get; set; }
-        public int CourseID { get; set; }
-        public int StudentID { get; set; }
-        public Nullable<int> LecturerId { get; set; }
-    
-        public virtual Course Course { get; set; }
-        public virtual Student Student { get; set; }
-        public virtual Lecturer Lecturer { get; set; }
+        public string MigrationId { get; set; }
+        public string ContextKey { get; set; }
+        public byte[] Model { get; set; }
+        public string ProductVersion { get; set; }
     }
 }

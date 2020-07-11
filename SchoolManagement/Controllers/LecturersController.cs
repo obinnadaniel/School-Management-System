@@ -1,115 +1,117 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using SchoolManagement.Models;
 
 namespace SchoolManagement.Controllers
 {
-    [Authorize(Roles ="Teacher,Admin")]
-    public class StudentsController : Controller
+    public class LecturersController : Controller
     {
         private SchoolManagement_DBEntities1 db = new SchoolManagement_DBEntities1();
 
-        // GET: Students
-       // [AllowAnonymous]
+        // GET: Lecturers
         public async Task<ActionResult> Index()
         {
-            return View(await db.Students.ToListAsync());
+            return View(await db.Lecturers.ToListAsync());
         }
 
-        // GET: Students/Details/5
+        // GET: Lecturers/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = await db.Students.FindAsync(id);
-            if (student == null)
+            Lecturer lecturer = await db.Lecturers.FindAsync(id);
+            if (lecturer == null)
             {
                 return HttpNotFound();
             }
-            return View(student);
+            return View(lecturer);
         }
 
-        // GET: Students/Create
+        // GET: Lecturers/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Students/Create
+        // POST: Lecturers/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "StudentID,LastName,FirstName,EnrollmentDate,MiddleName,DateofBirth")] Student student)
+        public async Task<ActionResult> Create([Bind(Include = "Id,First_Name,Last_Name")] Lecturer lecturer)
         {
             if (ModelState.IsValid)
             {
-                db.Students.Add(student);
+                db.Lecturers.Add(lecturer);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(student);
+            return View(lecturer);
         }
 
-        // GET: Students/Edit/5
+        // GET: Lecturers/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = await db.Students.FindAsync(id);
-            if (student == null)
+            Lecturer lecturer = await db.Lecturers.FindAsync(id);
+            if (lecturer == null)
             {
                 return HttpNotFound();
             }
-            return View(student);
+            return View(lecturer);
         }
 
-        // POST: Students/Edit/5
+        // POST: Lecturers/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "StudentID,LastName,FirstName,EnrollmentDate,MiddleName,DateofBirth")] Student student)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,First_Name,Last_Name")] Lecturer lecturer)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(student).State = EntityState.Modified;
+                db.Entry(lecturer).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(student);
+            return View(lecturer);
         }
 
-        // GET: Students/Delete/5
+        // GET: Lecturers/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = await db.Students.FindAsync(id);
-            if (student == null)
+            Lecturer lecturer = await db.Lecturers.FindAsync(id);
+            if (lecturer == null)
             {
                 return HttpNotFound();
             }
-            return View(student);
+            return View(lecturer);
         }
 
-        // POST: Students/Delete/5
+        // POST: Lecturers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Student student = await db.Students.FindAsync(id);
-            db.Students.Remove(student);
+            Lecturer lecturer = await db.Lecturers.FindAsync(id);
+            db.Lecturers.Remove(lecturer);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
