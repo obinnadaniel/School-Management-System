@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using SchoolManagement.Models;
+using System;
 
 namespace SchoolManagement.Controllers
 {
+    [Authorize(Roles = "Teacher,Admin")]
     public class EnrollmentsController : Controller
     {
         private SchoolManagement_DBEntities1 db = new SchoolManagement_DBEntities1();
@@ -20,6 +20,14 @@ namespace SchoolManagement.Controllers
         {
             var enrollments = db.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Lecturer);
             return View(await enrollments.ToListAsync());
+        }
+
+        public PartialViewResult _enrollmentPartial(int? courseid)
+        {
+            var enrollments = db.Enrollments.Where(q => q.CourseID == courseid)
+                .Include(e => e.Course)
+                .Include(e => e.Student);
+            return PartialView(enrollments.ToList());
         }
 
         // GET: Enrollments/Details/5
@@ -65,6 +73,27 @@ namespace SchoolManagement.Controllers
             ViewBag.LecturerId = new SelectList(db.Lecturers, "Id", "First_Name", enrollment.LecturerId);
             return View(enrollment);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> AddStudent([Bind(Include = "CourseID,StudentID")] Enrollment enrollment)
+        {
+            try
+            {
+                var isEnrolled = db.Enrollments.Any(q => q.CourseID == enrollment.CourseID && q.StudentID == enrollment.StudentID);
+                if (ModelState.IsValid && !isEnrolled)
+                {
+                    db.Enrollments.Add(enrollment);
+                    await db.SaveChangesAsync();
+                    return Json(new { IsSuccess = true, Message ="Student Added Successfully"}, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { IsSuccess = false, Message = "Student Is Already Enrolled" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { IsSuccess = false, Message = "System Failure: Please Contact Your Adminstrator" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+          
 
         // GET: Enrollments/Edit/5
         public async Task<ActionResult> Edit(int? id)
@@ -127,6 +156,16 @@ namespace SchoolManagement.Controllers
             db.Enrollments.Remove(enrollment);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public JsonResult GetStudents(string term)
+        {
+            var students = db.Students.Select(q => new {
+                Name = q.FirstName + " " + q.LastName,
+                Id = q.StudentID
+            }).Where(q => q.Name.Contains(term));
+            return Json(students, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)
