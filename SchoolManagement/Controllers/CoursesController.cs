@@ -7,7 +7,7 @@ using SchoolManagement.Models;
 
 namespace SchoolManagement.Controllers
 {
-    [Authorize(Roles = "Teacher,Admin")]
+    [Authorize(Roles = "Lecturer,Admin")]
     public class CoursesController : Controller
     {
         private SchoolManagement_DBEntities1 db = new SchoolManagement_DBEntities1();

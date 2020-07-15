@@ -10,7 +10,7 @@ using System;
 
 namespace SchoolManagement.Controllers
 {
-    [Authorize(Roles = "Teacher,Admin")]
+    [Authorize(Roles = "Lecturer,Admin")]
     public class EnrollmentsController : Controller
     {
         private SchoolManagement_DBEntities1 db = new SchoolManagement_DBEntities1();

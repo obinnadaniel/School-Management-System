@@ -47,11 +47,11 @@ namespace SchoolManagement
 
                
             }
-            if (!roleManager.RoleExists("Teacher"))
+            if (!roleManager.RoleExists("Lecturer"))
             {
 
                 var role = new IdentityRole();
-                    role.Name = "Teacher";
+                    role.Name = "Lecturer";
                 roleManager.Create(role);
 
             }
